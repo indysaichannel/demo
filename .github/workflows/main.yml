@@ -1,4 +1,4 @@
-name: Java CI/CD Pipeline
+name: MuleSoft CI/CD Pipeline
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,8 +22,15 @@ jobs:
       - name: Build with Maven
         run: mvn clean install
 
-  deploy-dev:
-    needs: build
+      - name: Publish to Anypoint Exchange
+        run: |
+          mvn mule:deploy -DmuleDeploy -DskipDeployment=true \
+            -Duser="${{ secrets.USER }}" \
+            -Dpass="${{ secrets.PASS }}" \
+            -DappName="${{ secrets.APPNAME }}"
+
+  deploy-dev-cloudhub2:
+    needs: build-and-publish
     runs-on: ubuntu-latest
 
     steps:
@@ -38,8 +45,7 @@ jobs:
 
       - name: Deploy to CloudHub 2.0
         run: |
-            mvn deploy -DmuleDeploy \
+          mvn mule:deploy -DmuleDeploy \
             -Duser="${{ secrets.USER }}" \
             -Dpass="${{ secrets.PASS }}" \
             -DappName="${{ secrets.APPNAME }}"
-
