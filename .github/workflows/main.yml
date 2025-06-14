@@ -38,8 +38,8 @@ jobs:
 
       - name: Deploy to CloudHub 2.0
         env:
-          user: ${{ secrets.ANYPOINT_USERNAME_DEV }}
-          pass: ${{ secrets.ANYPOINT_PASSWORD_DEV }}
+          user: ${{ secrets.USER }}
+          pass: ${{ secrets.PASS }}
           appName: ${{ secrets.APPNAME }}
         run: |
           mvn deploy -DmuleDeploy \
