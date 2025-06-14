@@ -37,12 +37,9 @@ jobs:
           distribution: 'temurin'
 
       - name: Deploy to CloudHub 2.0
-        env:
-          user: ${{ secrets.USER }}
-          pass: ${{ secrets.PASS }}
-          appName: ${{ secrets.APPNAME }}
         run: |
-          mvn deploy -DmuleDeploy \
-            -Duser=$user \
-            -Dpass=$pass \
-            -DappName=$appName
+            mvn deploy -DmuleDeploy \
+            -Duser="${{ secrets.USER }}" \
+            -Dpass="${{ secrets.PASS }}" \
+            -DappName="${{ secrets.APPNAME }}"
+
