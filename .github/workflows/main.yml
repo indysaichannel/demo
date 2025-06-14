@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,7 +19,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-
       - name: Build with Maven
         run: mvn clean install
 
@@ -30,11 +30,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Deploy to CloudHub Dev Environment
-        env:
-          ANYPOINT_USERNAME_DEV: ${{ secrets.ANYPOINT_USERNAME_DEV }}
-          ANYPOINT_PASSWORD_DEV: ${{ secrets.ANYPOINT_PASSWORD_DEV }}
-          APPNAME_DEV: ${{ secrets.APPNAME }}
-        run: |
-          echo "Deploying to CloudHub 2.0 Dev"
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
+      - name: Deploy to CloudHub 2.0
+        env:
+          user: ${{ secrets.ANYPOINT_USERNAME_DEV }}
+          pass: ${{ secrets.ANYPOINT_PASSWORD_DEV }}
+          appName: ${{ secrets.APPNAME }}
+        run: |
+          mvn deploy -DmuleDeploy \
+            -Duser=$user \
+            -Dpass=$pass \
+            -DappName=$appName
